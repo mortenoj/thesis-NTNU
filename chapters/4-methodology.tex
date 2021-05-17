@@ -541,6 +541,7 @@ After building the \acrfull{ml} training dataset, the next part of the process i
 
 \subsection{Categorical label encoding}
 
+\todo{drop one-hot}
 In the training dataset, there are both numerical values as well as categorical values. Categorical values are values that are a subset of a finite number of possible values, while numerical values have infinite possible values. In the training data, the data concerning ports and vessel segments are examples of categorical values, and the length of the vessel trajectories and the similarity values derived from the \acrshort{mstd} value is numerical. As described in \cref{sec:label_encoding}, the categorical values must be encoded so that \acrshort{ml} models can understand them. Choosing an appropriate encoding method depends on the cardinality of the features in the dataset. For instance, there are more than 5000 possible ports in the data foundation, therefore, columns concerning ports such as arrival port, departure port, and \acrshort{mstd} have high cardinality. On the other hand, the features segment, and sub-segment have lower cardinality as there are only eight segments and 95 unique sub-segments. Based on the advantages and disadvantages of label encoding and ``one-hot'' encoding (\cref{sec:label_encoding}), it makes sense to ``one-hot'' encode the low cardinality features, while using label encoding for the remaining columns.
 
 \todo{figure or code}
