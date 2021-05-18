@@ -4,6 +4,7 @@
 In this chapter, a brief summary of the thesis is provided followed by discussions regarding the proposed solution, the field of study, possible applications and the validity of the approach in terms of both academic and commercial values. Finally, limitations of the thesis and proposed future work is presented and discussed.
 
 \section{Summary}
+\label{sec:summary}
 
 This thesis has investigated the topic of destination prediction for vessels in the shipping industry by using historical \acrfull{ais} data and additional vessel information. \acrshort{ais} is a globally adopted tracking system that transmits all commercial vessels' geographical and navigational information similar to that of GPS\@. The thesis objective was to develop a methodology for predicting traveling vessels' future destination ports on a global scale unrestricted by specific vessel types, geographical regions, or time intervals using historical \acrshort{ais} data. The thesis was developed in collaboration with a technological maritime start-up company called \acrfull{mo} who provided the data foundation used throughout the thesis, as well as access to experts to validate the solution. The thesis aimed to answer two primary research questions:
 
@@ -12,17 +13,78 @@ This thesis has investigated the topic of destination prediction for vessels in 
     \item What is the impact of vessel segmentation on prediction methods, or vessels' general predictability?
 \end{enumerate}
 
-Related work within the area of vessel destination or trajectory prediction was investigated to determine to what extent existing literature had already answered the research questions. It was found that the majority of related work was motivated by collision avoidance for safety reasons, anomaly detection to detect vessels deviating from established shipping lanes, automated collision avoidance systems to be installed on autonomous vessels, or short term trajectory predictions to aid in port management and scheduling. Existing works motivated by these factors did not consider the future destination port of the traveling vessels, but rather the vessels' specific positions or future trajectories in a short time interval ranging from minutes to a few hours. The few related studies that considered future destinations of vessels were almost all limited, or exclusively tested on a specific region or area such as the Mediterranean sea. One study was found that considered a general port destination prediction approach, however, this study, presented in \cite{Zhang2020AISApproach}, exclusively considered the geographical information provided by the \acrshort{ais} standard, and did not consider additional vessel information such as the type, size, or capacity of vessels. Thus, since the research questions were close to unanswered by the existing literature, this thesis' goal was refined to developing a global and general vessel destination prediction method that is capable of considering more than purely spatial voyage information such as vessel segments and sub-segments as provided by the collaborative company \acrfull{mo}.
+Related work within the area of vessel destination or trajectory prediction was investigated to determine to what extent existing literature had already answered the research questions. It was found that the majority of related work was motivated by collision avoidance for safety reasons, anomaly detection to detect vessels deviating from established shipping lanes, automated collision avoidance systems to be installed on autonomous vessels, or short term trajectory predictions to aid in port management and scheduling. Existing works motivated by these factors did not consider the future destination port of the traveling vessels, but rather the vessels' specific positions or future trajectories in a short time interval ranging from minutes to a few hours. The few related studies that considered future destinations of vessels were almost all limited, or exclusively tested on a specific region or area such as the Mediterranean sea. One study was found that considered a general port destination prediction approach, however, this study, presented in \cite{Zhang2020AISApproach}, exclusively considered the geographical information provided by the \acrshort{ais} standard, and did not consider additional vessel information such as the type, size, or capacity of vessels. Since the research questions were not fully answered by the existing literature, the thesis goal was refined to developing a global and general vessel destination prediction method that is capable of considering more than purely spatial voyage information such as vessel segments and sub-segments as provided by the collaborative company \acrfull{mo}.
 
 In order to use spatial voyage trajectories derived from \acrshort{ais} data in the final prediction method, the thesis formulated a voyage definition that determined what conditions had to be true to consider a vessel arrived at a specific port. Based on related works, a clustering-based approach was initially evaluated that detected ``clusters'' of \acrshort{ais} records close to shipping ports using the \acrfull{dbscan} algorithm. When positional records were transmitted in a high enough density close to a port, the vessel was considered arrived. However, this approach was later abandoned in favor of a voyage definition that considered the vessels themselves expressing an arrived state via the navigational status ``moored'' in the \acrshort{ais} data. The latter approach was favored as it ignored intermediate port visits during a voyage such as when vessels stopping to refuel at bunker ports, it therefore produced more valuable voyages that ends where the vessel unloads cargo and considers itself to be moored.
 
-Using a standardized voyage definition, historical \acrshort{ais} data ranging from December 2019 to March 2021 provided by \acrshort{mo} was constructed into \textbf{1.7} million voyages and trajectories defined as positional records transmitted between subsequent departures and arrivals. These voyages formed the initial training data to be used to train a \acrfull{ml} model to predict voyages' arrival ports. In order to consider specific vessel information, voyage information, and spatial trajectories, a method of structuring spatial trajectories as categorical and numerical values was proposed. In this approach every historical trajectory was compared with every other trajectory outgoing from the same departure port from vessels of the same type in order to find the most similar historical trajectory. The \acrfull{sspd} algorithm was used to determine trajectory similarity. The trajectories had been simplified prior to this comparison by only using one point at every six hour interval in each trajectory in order to make comparisons easier. Furthermore, in the process of trajectory comparisons, each voyage was divided into at most four incomplete versions of the same trajectory to emulate realistic voyages not yet reached their final destination. The most similar historical trajectory's destination port (\acrshort{mstd}), the value indicating the similarity value of the trajectories, and the trajectory length became the categorical and numerical values representing a voyage's spatial trajectory. The final training set only contained categorical and numerical values, consisted of \textbf{4.3} million incomplete voyages, and formed the final training dataset used to train a \acrshort{ml} model.
+Using the predefined voyage definition, historical \acrshort{ais} data ranging from December 2019 to March 2021 provided by \acrshort{mo} was constructed into \textbf{1.7} million voyages and trajectories defined as positional records transmitted between subsequent departures and arrivals. These voyages formed the initial training data to be used to train a \acrfull{ml} model to predict voyages' arrival ports. In order to consider specific vessel information, voyage information, and spatial trajectories, a method of structuring spatial trajectories as categorical and numerical values was proposed. In this approach every historical trajectory was compared with every other trajectory outgoing from the same departure port from vessels of the same type in order to find the most similar historical trajectory. The \acrfull{sspd} algorithm was used to determine trajectory similarity. The trajectories had been simplified prior to this comparison by only using one point at every six hour interval in each trajectory in order to make comparisons easier. Furthermore, in the process of trajectory comparisons, each voyage was divided into at most four incomplete versions of the same trajectory to emulate realistic voyages not yet reached their final destination. The most similar historical trajectory's destination port (\acrshort{mstd}), the value indicating the similarity value of the trajectories, and the trajectory length became the categorical and numerical values representing a voyage's spatial trajectory. The final training set only contained categorical and numerical values, consisted of \textbf{4.3} million incomplete voyages, and formed the final training dataset used to train a \acrshort{ml} model.
 
-An \acrfull{xgb} \acrshort{ml} model was then configured and trained to predict a voyage's arrival port by considering the vessel's segmentation, or type, departure port, \acrshort{mstd}, \acrshort{mstd} similarity, and trajectory length, or duration. The training process used \textit{80\%} and \textit{20\%} as training and evaluation data respectively and achieved an accuracy score of \textbf{72\%}, and an F1-score of \textbf{0.734} validated by additional metrics and cross-folder validation.
+An \acrfull{xgb} \acrshort{ml} model was then configured and trained to predict a voyage's arrival port by considering the vessel's segmentation, or type, departure port, \acrshort{mstd}, \acrshort{mstd} similarity, and trajectory length, or duration. The training process used \textit{80\%} and \textit{20\%} as training and evaluation data respectively and achieved an accuracy score of \textbf{72\%}, and an F1-score of \textbf{0.734} validated by additional metrics and cross-folder validation. The \textbf{20\%} of the dataset used to evaluate the initial training process resulted in around \textit{880 000} example predictions that were then analyzed in order to gain insight into \texttt{research question 2}. It was found that the segmentation value had large impact on the model's performance, and some vessel segments were easier to predict than others. For some segments, accuracies for underlaying sub-segments defined by vessels' size and capacities seemed to indicate some correlation between vessel size, capacity and predictability, however, in other segments, this did not seem to be the case.
 
-\section{Dataset and problem formulation}
+Finally, in order to determine the validity of the proposed solution, several high-ranking commercial shipping actors were interviewed. They provided a valuable perspective into the commercial validity of the thesis and had numerous suggestions to possible applications and future improvements.
+
+% \begin{enumerate}
+%     \item How can \acrshort{ais} data combined with specific vessel details be applied to predict future destinations of maritime vessels?
+%     \begin{enumerate}
+%     \item What prediction methods can be used to predict vessel destinations?
+%     \item What information can be used to predict vessel destinations?
+%     \item How extensive are existing prediction methods?
+%     \item How can the validity of the prediction methods be ensured?
+%     \end{enumerate}
+%     \item What is the impact of vessel segmentation on prediction methods, or vessels' general predictability?
+%     \begin{enumerate}
+%     \item What types of vessels are more predictable than others?
+%     \item Do larger vessels travel in more predictable patterns than smaller vessels?
+%     \end{enumerate}
+% \end{enumerate}
+
+% @TODO any value of discussing:
+% \subsection{Data storage and architecture}
+% \begin{itemize}
+%     \item Scalability, availability. PostGreSQL DB structure advantages/disadvantages
+% \end{itemize}
+
+\section{Research questions}
+
+This thesis has aimed to answer two main research questions, as listed in \cref{sec:summary}, as well as a number of sub-questions as specified in \cref{sec:research_questions}. This section describes how each research question was answered as part of the proposed solution or preliminary literature review.
+
+\subsection{RQ 1: How can \acrshort{ais} data combined with specific vessel details be applied to predict future destinations of maritime vessels?}
+
+The existing literature was unable to fully answer this research question which further motivated the developed model proposed in this thesis. Thus, the thesis proposes a method of predicting the future destinations of vessels based on historical \acrshort{ais} and specific vessel details. Vessel voyages were defined and trajectories were constructed using historical \acrshort{ais} records. These trajectories were structured as categorical and numerical values by making initial predictions purely based on the spatial trajectories by calculating the \acrfull{mstd}. The resulting training dataset was easily extended to include additional vessel details such as the vessels' segments and sub-segments. Thus, any classification oriented \acrshort{ml} model could be trained to predict voyages' arrival ports.
+
+\subsubsection{RQ 1a: What prediction methods can be used to predict vessel destinations?}
+
+In addition to the thesis' proposed method, existing literature showed a few number of methods capable of predicting destination ports. The only study found unlimited by specific geographical regions developed a \acrfull{rf} -based trajectory similarity measurement method that was used to find a traveling vessel's most similar historical trajectory's destination port similar to that of the \acrshort{mstd} value used in this thesis. They also used the frequencies of port visits to normalize the predictions. In the solution proposed in this thesis, their \acrshort{ml}-based trajectory similarity method could replace the \acrshort{sspd} method when calculating the \acrshort{mstd} value in the training dataset and when making predictions.
+
+\subsubsection{RQ 1b: What information can be used to predict vessel destinations?}
+
+The related work showed that purely spatial attributes in historical \acrshort{ais} data had been used to make predictions regarding vessel's future trajectory or destination. A few studies used the vessels' heading and speed as well as their geographical coordinates when making predictions, however, it was most common to only consider trajectories derived from geographical coordinates when making predictions. In the thesis' proposed solution, the vessels' departure ports and vessel segmentation proved to be highly impactful on destination predictions.
+
+\subsubsection{RQ 1c: How extensive are existing prediction methods?}
+
+Based on the results from a review of the current literature, most prediction methods did not consider future destination ports, but rather vessels' future short-term trajectory. Development of such methods were often motivated by security improvement and used to detect possible collision scenarios. These prediction methods were limited to time intervals ranging from minutes to a few hours at most. Longer term prediction methods that did consider arrival ports were limited by a single geographical region often as a result from limited access to historical \acrshort{ais} data. Only one study was found to consider destination predictions on a global scale independent of time restrictions, however, this method only considered geographical trajectories and ignored vessels' size, capacity, and type.
+
+\subsubsection{RQ 1d: How can the validity of the prediction methods be ensured?}
+
+There were many different validation approaches taken in the existing literature. The most common validation method included using some manner of \textit{k-fold cross validation} with multiple performance metrics such as F1-score, Mean Distance Error (MDE), and accuracy. In some studies it was appropriate to conduct case-studies and real-life experiments to validate their results. This thesis relied on cross-fold validation with multiple performance metrics and additional expert validation in ensure the validity of the proposed method.
+
+\subsection{RQ 2: What is the impact of vessel segmentation on prediction methods, or vessels' general predictability?}
+
+During the model evaluation stage in this thesis, almost \textit{900 000} sample predictions were produced and analyzed in order to determine accuracy levels across vessels of different segments and sub-segments. Moreover, as a tree based ensemble model was used, a sense of feature importance were produced during the training process. The resulting feature importance showed that the combined segmentation value had a feature importance of \textit{0.18}, or \textit{18\%} which was close to that of the departure port value at \textit{0.23}, or \textit{23\%}. A full overview of feature importances is shown in \cref{tab:feature_importances}.
+
+\subsubsection{RQ 2a: What types of vessels are more predictable than others?}
+
+Based on the resulting predictions from the evaluation process, the accuracy levels of the eight different segments are shown in \cref{fig:segment_accuracy}. The segment ``other'' had the highest total accuracy of \textit{76\%} which resulted from a high number of very predictable passenger vessels. The tanker and chemical vessels were slightly more predictable than dry bulk, \acrfull{lpg}, and \acrfull{lng} vessels. Combination vessels within the segment ``combo'' also showed a high accuracy since it includes a sub-segment that overlaps into the tanker and chemical segments otherwise, the other sub-segments showed low prediction accuracy. The oil service vessels also showed a high accuracy level caused by a singular sub-segment including oil platform supply vessels. It is logical that combo vessels are hard to predict as they can serve multiple functions giving them a broader range of possible loading and unloading ports.
+
+\subsubsection{RQ 2b: Do larger vessels travel in more predictable patterns than smaller vessels?}
+
+The resulting predictions from the evaluation processes showed that there seemed to be some correlation between size, capacity and predictability, but only for some segments. This was investigated by looking at specific sub-segment accuracies for sub-segments that were based on size or capacity of vessels. The sub-segments within the chemical segment somewhat indicates that larger vessels were easier to predict, however, \acrshort{lng}, and \acrshort{lpg} vessels indicate a stronger correlation in the opposite direction where the smaller sub-segments showed higher accuracies. For segments such as tanker and dry bulk, no strong correlation was found between size, capacity, and predictability. Thus, based on the proposed general prediction method, there is no strong indication of larger vessels being easier to predict than others. There is likely a trade-off present regarding this correlation where smaller vessels traveling short distances are easier to predict using their spatial trajectories, but travel to a larger range of different ports. On the other hand, larger vessels needs to travel further before trajectory predictions (\acrshort{mstd}) becomes accurate, but there are fewer number of possible ports they travel to, thus, the frequencies of port visits probably has a larger impact on larger vessels, but trajectory based predictions are more effective for smaller vessels. This is further alluded to by the trajectory length for correct and erroneous predictions that was, on average, shorter for correct predictions than for incorrect predictions.
+
+\section{Application challenges}
 
 \subsection{Vessel voyage definition}
+
+Clustering vs. transitions. Input from experts.
 
 \subsection{Geographical trajectory abstraction and MSTD}
 \begin{itemize}
@@ -35,48 +97,10 @@ An \acrfull{xgb} \acrshort{ml} model was then configured and trained to predict 
     \end{itemize}
 \end{itemize}
 
-\subsection{Data preparation and dataset imbalance}
+\subsection{Dataset imbalance}
 \begin{itemize}
-    \item How was encoding appropriate?
     \item Was sampling appropriate, how did it affect results?
     \item Are there different sampling methods that could have been more appropriate?
-\end{itemize}
-
-\subsection{Data storage and architecture}
-\begin{itemize}
-    \item Scalability, availability. PostGreSQL DB structure advantages/disadvantages
-\end{itemize}
-
-\section{ML-based destination prediction}
-\begin{itemize}
-    \item Why did we get the described performance.
-    \item Weaknesses/limitations
-    \item Dataset vs real life
-\end{itemize}
-
-\section{Research questions and hypothesis}
-
-\begin{itemize}
-    \item How did I answer the research questions?
-    \item Any additional hypothesis?
-    \item How was what I did different from related works?
-\end{itemize}
-
-\subsection{Feature importances}
-
-\begin{itemize}
-    \item MSTD
-    \item Segmentation
-    \item weights
-    \item good setup to add new features as it is easy to see impact
-\end{itemize}
-
-
-\subsection{Segment predictability}
-
-\begin{itemize}
-    \item Why are some segments easier to predict
-    \item Why are some sub-segments easier to predict
 \end{itemize}
 
 \section{Real-life applications}
@@ -87,6 +111,7 @@ An \acrfull{xgb} \acrshort{ml} model was then configured and trained to predict 
     \item Response from external actors
     \item Is this something that contributes to the industry as well as academia
     \item Value for MO\@. Future applications and integrations in MO's product (teasers)
+    \item good setup to add new features as it is easy to see impact
 \end{itemize}
 
 \section{Limitations and future work}
@@ -94,7 +119,6 @@ An \acrfull{xgb} \acrshort{ml} model was then configured and trained to predict 
 \begin{itemize}
     \item Further investigation of imbalanced datasets, over optimistic evaluation, and oversampling. (https://ieeexplore.ieee.org/abstract/document/8492368)
     \item What are appropriate sampling methods?
-    \item The model is not overfitted, but is it overoptimistic?
 \end{itemize}
 
 \begin{itemize}
@@ -114,7 +138,7 @@ An \acrfull{xgb} \acrshort{ml} model was then configured and trained to predict 
 \end{itemize}
 \end{itemize}
 
-\subsection{Vessel availability}
+% \subsection{Vessel availability}
 \begin{itemize}
     \item Further implementation with MO's infrastructure.
     \item Give me all vessels that will be in port A at X time.
