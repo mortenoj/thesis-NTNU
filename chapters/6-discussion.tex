@@ -23,27 +23,6 @@ An \acrfull{xgb} \acrshort{ml} model was then configured and trained to predict 
 
 Finally, in order to determine the validity of the proposed solution, several high-ranking commercial shipping actors were interviewed. They provided a valuable perspective into the commercial validity of the thesis and had numerous suggestions to possible applications and future improvements.
 
-% \begin{enumerate}
-%     \item How can \acrshort{ais} data combined with specific vessel details be applied to predict future destinations of maritime vessels?
-%     \begin{enumerate}
-%     \item What prediction methods can be used to predict vessel destinations?
-%     \item What information can be used to predict vessel destinations?
-%     \item How extensive are existing prediction methods?
-%     \item How can the validity of the prediction methods be ensured?
-%     \end{enumerate}
-%     \item What is the impact of vessel segmentation on prediction methods, or vessels' general predictability?
-%     \begin{enumerate}
-%     \item What types of vessels are more predictable than others?
-%     \item Do larger vessels travel in more predictable patterns than smaller vessels?
-%     \end{enumerate}
-% \end{enumerate}
-
-% @TODO any value of discussing:
-% \subsection{Data storage and architecture}
-% \begin{itemize}
-%     \item Scalability, availability. PostGreSQL DB structure advantages/disadvantages
-% \end{itemize}
-
 \section{Research questions}
 
 This thesis has aimed to answer two main research questions, as listed in \cref{sec:summary}, as well as a number of sub-questions as specified in \cref{sec:research_questions}. This section describes how each research question was answered as part of the proposed solution or preliminary literature review.
@@ -80,66 +59,54 @@ Based on the resulting predictions from the evaluation process, the accuracy lev
 
 The resulting predictions from the evaluation processes showed that there seemed to be some correlation between size, capacity and predictability, but only for some segments. This was investigated by looking at specific sub-segment accuracies for sub-segments that were based on size or capacity of vessels. The sub-segments within the chemical segment somewhat indicates that larger vessels were easier to predict, however, \acrshort{lng}, and \acrshort{lpg} vessels indicate a stronger correlation in the opposite direction where the smaller sub-segments showed higher accuracies. For segments such as tanker and dry bulk, no strong correlation was found between size, capacity, and predictability. Thus, based on the proposed general prediction method, there is no strong indication of larger vessels being easier to predict than others. There is likely a trade-off present regarding this correlation where smaller vessels traveling short distances are easier to predict using their spatial trajectories, but travel to a larger range of different ports. On the other hand, larger vessels needs to travel further before trajectory predictions (\acrshort{mstd}) becomes accurate, but there are fewer number of possible ports they travel to, thus, the frequencies of port visits probably has a larger impact on larger vessels, but trajectory based predictions are more effective for smaller vessels. This is further alluded to by the trajectory length for correct and erroneous predictions that was, on average, shorter for correct predictions than for incorrect predictions.
 
-\section{Application challenges}
+\section{Limitations and application challenges}
+
+This section aims to disclose and discuss important application, or implementation, challenges as well as other possible impact factors and limitations that might have affected the analysis conducted throughout the thesis.
 
 \subsection{Vessel voyage definition}
 
-Clustering vs. transitions. Input from experts.
+As summarized in \cref{sec:summary}, the thesis composed a specific voyage definition that was used to construct voyages from historical \acrshort{ais} data. This definition was an important aspect of the proposed solution as it forms the foundation of what voyages are and how resulting voyage predictions are characterized. Related work granted little insight into this area as few studies considered individual voyage predictions, however, one approach was proposed in \cite{Zhang2020AISApproach} that involved using the \acrshort{dbscan} algorithm to detect clusters of positional \acrshort{ais} data transmitted by individual vessels close to ports. A similar approach was investigated in this thesis (\cref{sec:clustering}) where clusters were detected, mapped to its closest port, and labeled as an arrival at the port. The main disadvantage of this approach was that it defined vessels bunkering (refueling) as arrivals as it cannot distinguish between vessels stopping at ports to load or unload and vessels stopping close to ports because they are held up or bunkering and vessels stopping to load or unload cargo.
+
+An alternative approach was proposed in this thesis where the navigational status attribute in the \acrshort{ais} data was used to determine when a vessel has arrived at a port. A vessel is considered arrived when the status is set to ``moored'' close to a port. This status is a manually input attribute that the captain or crew on board a ship manages. This means that when the signal is set to ``moored'', it is the captain of the vessel that considers the vessel as arrived at a port. Thus, the alternative definition trusts the vessels themselves to manage their moored and moving statuses which has the advantage of producing more commercially viable voyages, but is affected by human error and lacking standardization. This latter approach was the chosen voyage definition throughout the thesis as the cluster-based solution proved difficult and time-consuming to configure in order to get a good voyage definition for all vessels, while the latter definition, on average, produced high-quality voyages.
+
+During interviews with commercial actors in the shipping industry, some additional opinions were given on the topic of voyage definitions. One promising suggestion was given that mostly revolved around using additional port information to determine what the purpose of port visits were. For instance, vessels are likely to load at loading ports, likely to unload at unloading ports, and likely to bunker at bunkering ports. Thus, a third alternative could have been constructed using a combination of the clustering approach with additional port data to determine why vessels stop at different ports. Although the required information per port was not available when developing the thesis' proposed solution, it shows promise as a future improvement on the thesis work.
 
 \subsection{Geographical trajectory abstraction and MSTD}
-\begin{itemize}
-    \item Is MSTD an appropriate abstraction of trajectories.
-    \item Are there other ways to combine trajectory predictions with additional voyage and vessel data?
-    \begin{itemize}
-        \item MSTD with more filters?
-        \item Different trajectory similarity measurements?
-        \item ML-based trajectory similarity normalized with port frequency considering segments?
-    \end{itemize}
-\end{itemize}
+
+Another challenge discussed throughout the thesis is the method of which to consider both geographical trajectory and additional vessel and voyage information in a \acrfull{ml}-based prediction method. In this thesis, a vessel's spatial trajectory is reconstructed in the categorical value \acrfull{mstd} and the numerical values \acrshort{mstd} similarity, and trajectory length. The \acrshort{mstd} value is a preliminary guess of the vessel's destination purely based on its trajectory by comparing it to every historical trajectory outgoing from the same departure port. The \acrshort{mstd} is found using a trajectory similarity measurement algorithm called \acrfull{sspd}. This method is especially apt at handling trajectories of different lengths and shapes which was beneficial for comparing incomplete voyages not yet arrived to complete historical trajectories. In the training dataset which consisted of \textbf{4.3} million incomplete voyages, the \acrshort{mstd} value corresponded exactly to the actual arrival port for \textit{33\%} of the voyages. This means that a purely spatial algorithmic approach could be \textit{33\%} accurate using this approach.
+
+In regards to related work, the method proposed in \cite{Zhang2020AISApproach} was a purely spatial trajectory similarity based approach. Their \acrfull{rf}-based \acrshort{ml} approach achieved an accuracy of \textit{67\%}. Although the accuracies are not comparable as two different voyage definitions were used, there could be a method of combining both approaches to construct a more efficient geographical trajectory abstraction and ultimately improve the final prediction method. This combined approach could also be improved by more data attributes such as vessel segmentation and the loading condition of vessels which could result in a highly accurate \acrshort{mstd} value.
 
 \subsection{Dataset imbalance}
-\begin{itemize}
-    \item Was sampling appropriate, how did it affect results?
-    \item Are there different sampling methods that could have been more appropriate?
-\end{itemize}
 
-\section{Real-life applications}
+During the preparation stage for for \acrshort{ml} training, it was discovered that the dataset suffered from significant imbalance in terms of the frequency of arrival port classes. When \acrshort{ml} models are trained on imbalanced datasets, the models sees more examples of some outcomes than others which can lead to the model becoming biased to the classes with the highest occurrences. Methods of dealing with class imbalance has become its own area of study within \acrshort{ml} disciplines, thus, implications of solutions to such problems are mostly open-ended. Common methods of dealing with imbalance include undersampling majority classes and oversampling minority classes both of which comes with their own problems. Undersampling can lead to overfitting as samples are duplicated, or synthetically generated, and oversampling can lead to removing lots of important information.
 
-\begin{itemize}
-    \item What is the value of this solution
-    \item What can it be used for
-    \item Response from external actors
-    \item Is this something that contributes to the industry as well as academia
-    \item Value for MO\@. Future applications and integrations in MO's product (teasers)
-    \item good setup to add new features as it is easy to see impact
-\end{itemize}
+In this thesis, a combined approach including both under- and oversampling was used to balance the dataset. The results seem to indicate that the model did not overfit and still reach a high accuracy, thus, it did not remove too many important samples, however, cross validation and other evaluation methods can be inefficient in some cases of oversampled datasets. \cite{cv_imbalance} suggests that model evaluation can be overoptimistic if the training and testing datasets contain much of the same data. This is common when severe oversampling of minority classes has been used. In this thesis, oversampling was used very sparingly and only in combination with additional undersampling techniques. The resulting dataset did not increase much in size, thus an almost equal amount of majority classes were removed as minority classes were synthetically generated using \acrfull{smote}. However, further analysis into the data preparation stage and evaluation process might be warranted in order to determine the implications of this sampling process as well as further research into which sampling techniques are the most appropriate for the training dataset.
 
-\section{Limitations and future work}
+\subsection{External impact factors}
 
-\begin{itemize}
-    \item Further investigation of imbalanced datasets, over optimistic evaluation, and oversampling. (https://ieeexplore.ieee.org/abstract/document/8492368)
-    \item What are appropriate sampling methods?
-\end{itemize}
+Lastly, the predictability of vessels ultimately depends on the model's ability to find global voyage patterns for different types of shipping vessels. Thus, the level predictability can affected by external factors that have significant impact on these patterns. For instance, shipping traffic is perpendicular to the demand of cargo freight which reflects production of goods and services, thus, fluctuations in production as well as consumerism results in fluctuations in shipping traffic and voyage patterns. Therefore, it must be considered that changes in commercial supply and demand has an affect on the validity of the presented prediction model.
 
-\begin{itemize}
-    \item Voyage definition - anchoring, bunkering
-\begin{itemize}
-    \item AIS navigational status is manual input, can we better claim that a vessel has arrived/departed a port?
-    \item clustering vs. transitions
-\end{itemize}
-    \item MSTD - trajectory similarity measurement. Zhang et al. achieved better results using RF than SSPD.
-    \item Improving the model by adding more features such as weather, seasons, ballast/laden, \ldots more?
-    \item Implementing at large scale providing on-demand predictions and availability
-\begin{itemize}
-    \item Implement a real-time updated voyage database
-    \item Fetch every vessels current trajectory and estimate MSTD
-    \item Pass all vessel data to ML model which, very quickly, predicts destination ports.
-    \item Use a routing concept to get ETA (mesh-based routing, ais-based routing)
-\end{itemize}
-\end{itemize}
+Moreover, the foundation dataset used in this thesis was collected from a historical set of \acrshort{ais} data ranging from December 2019 to March 2021, therefore, and significant impact factor could be that of the outbreak of the \textit{COVID-19} virus that affected the entire world in the year 2020 \parencite{covid_article}. The outbreak has had a significant impact on the shipping industry in the time range of available \acrshort{ais} data used in the thesis. For instance, the virus outbreak has lead to various port closures, less demand of cargo, and extensive layups (vessels brought out of commission)\footnote{\url{https://www.mondaq.com/marine-shipping/958770}}. Oil prices have also been affected, and some countries like Norway have had an overflow of resources that could not be shipped to other countries. In these cases, tanker vessels have been recommissioned for oil storage purposes. Furthermore, a study presented in \cite{MICHAIL2020100178} claims there has been significant impact on especially the tanker and dry bulk cargo segments and found a measurable correlation between the increase in \textit{COVID-19} cases and decrease in dry bulk and tanker freight indices.
 
-% \subsection{Vessel availability}
-\begin{itemize}
-    \item Further implementation with MO's infrastructure.
-    \item Give me all vessels that will be in port A at X time.
-\end{itemize}
+Because of the extensive impact of the outbreak, it must be considered that the model trained for arrival port prediction presented in this thesis is also affected. In the predefined dataset, there is not enough data to measure the impact since it should at least cover a full year of data before the virus broke out for comparisons. However, given more historical \acrshort{ais} data ranging back further in time, a study could be conducted to investigate this relationship.
+
+\section{Commercial applicability}
+
+This thesis has been developed in collaboration with the maritime technological startup company \acrfull{mo} where the author is also employed and has been involved with since it was founded in 2018. Therefore, there are interests in regards to future use and commercial applicability. After the proposed model was trained and evaluated, other external shipping contacts provided by \acrshort{mo} were also interviewed in order to gain insight into possible future applications and validity. It was clear from this information gathered that the most promising aspect of the thesis involves the possible applications toward forecasting vessel availability in specific ports and regions.
+
+A path toward implementing such as system would involve combining resulting arrival port predictions with a method of estimating the \acrfull{eta} to the predicted arrival port from the vessel's last known position. This could relatively easily be implemented by using a route estimating tool such as the one provided by \acrshort{mo}. This tool finds the most optimal route from any two given points at sea returning the distance of the calculated route. Thus, given a prediction of the next arrival port and \acrshort{eta} for every currently traveling vessel, an estimate of which vessels will be arriving at different ports at different times can be calculated. This functionality enables shipping actors and investors to make more informed decisions when deciding what cargoes to bid on and what areas to focus on.
+
+Today, such information is currently provided as a service through shipping brokers who conduct extensive analysis and sells it to charterers and other actors. A point made from one of the interviewees was that the work presented in this thesis would probably be of high value to the brokers as additional insight in to voyage patterns rather than to the charterers themselves. The brokers are trusted sources of information while technological solutions are less so and can currently not cover all of the services that brokers provide. Thus, the presented solution can help brokers collect data more effectively, or from a different perspective, as well as be integrated in existing software solutions such as \acrshort{mo}.
+
+\section{Conclusions and future work}
+
+This thesis has presented a method for vessel destination forecasting based in historical \acrshort{ais} which is capable of considering additional information such as vessel segments when making predictions. The presented \acrfull{ml} model had a measured accuracy of \textit{72\%} and was applicable toward analyzing the predictability of different vessel segments and sub-segments as well as determining correlating relationships between size, capacity and predictability. The thesis used a specific voyage definition when constructing voyages from the historical \acrshort{ais} data. The advantages of this definition have been discussed, and alternate definitions have been presented. As a candidate for future work, it is suggested that the alternate voyage definition that takes advantage of additional port data should be explored. A combined approach using positional clustering and port data could be used to determine the intent, or context, of vessels stopping at different ports. Implications on prediction performance as well as validity for commercial users should be described during such as study.
+
+Moreover, the problem of multi-class classification on imbalanced datasets should further be investigated in order to determine the most appropriate method of managing imbalance within the constructed training dataset.~\cite{cv_imbalance} found promising results using a specific combination of \acrshort{smote} oversampling and Tomek Links undersampling to balance the dataset before training while avoiding overfitting and over-optimism in evaluation. The impact of the current sampling approach could also further be investigated as it relates to the validity of the trained model.
+
+The method proposed in this thesis also included a method of abstracting vessels' geographical trajectories into categorical and numerical values used in the training process using the concept of the \acrfull{mstd}. The \acrfull{sspd} method was used to measure similarity between trajectories which was used to find the \acrshort{mstd} for each voyage in the training dataset and achieved an initial accuracy of \textit{33\%}. The structure of the dataset constructed gives high flexibility in replacing the \acrshort{sspd}-based \acrshort{mstd} value with another, therefore, for future work, it is suggested that different trajectory similarity measurements are implemented and evaluated in order to determine the best approach to calculating the \acrshort{mstd}. A promising method for trajectory similarity measurement was presented in \cite{Zhang2020AISApproach} which could be combined with the proposed solution to improve the performance of the model.
+
+Furthermore, the structure of the training process and dataset provides an foundation that can easily be extended with additional features. The trained \acrfull{xgb} model can also estimate feature importances which makes it easy to add and evaluate new features. For future work, additional features should be applied to the training set such as seasonality, or time of year, whether the traveling vessel is in a ballast (unloaded) or laden condition (loaded), and current draft (depth in water). The aforementioned features are thought to provide more insight into voyage patterns by experts interviewed as part of this thesis.
+
+Lastly, in terms of future commercial applications, it is suggested that predictions from the presented model can be combined with a route estimator or a distance table in order to calculate the \acrfull{eta} to predicted arrival ports from vessels' last known positions. Given an overview over every available vessel's predicted next arrival port and its \acrshort{eta}, it is possible to estimate what vessels are thought to be available at different ports and regions at different times. Thus, an overview can be produced that includes how many vessels of different segments and sub-segments are thought to arrive at different ports which has been confirmed to be of high commercial value.
