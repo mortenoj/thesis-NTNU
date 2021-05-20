@@ -3,24 +3,6 @@
 
 \makeglossaries % Prepare for adding glossary entries
 
-
-\newglossaryentry{latex}{
-        name=latex,
-        description={Is a mark up language specially suited for
-scientific documents}
-}
-
-\newglossaryentry{bibliography}{
-    name=bibliography,
-    plural=bibliographies,
-    description={A list of the books referred to in a scholarly work, typically printed as an appendix}
-}
-
-\newglossaryentry{maths}{
-    name=mathematics,
-    description={Mathematics is what mathematicians do}
-}
-
 \newglossaryentry{locode}{
     name=UN/LOCODE,
     description={Five-letter geographic coding scheme maintained by the UN. The codes are assigned to, among others, ports where the first to letters represents a country code and the remaining three represents a location}
@@ -28,7 +10,19 @@ scientific documents}
 
 \newglossaryentry{aivdm}{
     name=AIVDM/AIVDO,
-    description={The protocol used by AIS messages where AIVDM contains data received from other vessels, and AIVDO contains data from the owner vessel}
+    description={The protocol used by AIS messages where AIVDM contains data received from other vessels, and AIVDO contains data from the owner vessel. A description of the protocol can be found at \url{https://gpsd.gitlab.io/gpsd/AIVDM.html}}
+}
+
+\newglossaryentry{voyage}{
+    name=voyage,
+    plural=voyages,
+    description={A journey a vessel undertakes at sea departing one port, and arriving at another.}
+}
+
+\newglossaryentry{transition}{
+    name=vessel transition,
+    plural=vessel transitions,
+    description={An event describing a change in a vessel's naviagtional status emitted via AIS. A vessel is considered arrived at port when the status changes from ``underway using engine'' to ``moored`` and departed from port when the status changes from ``moored'' to ``underway using engine''}
 }
 
 
