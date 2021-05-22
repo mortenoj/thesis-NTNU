@@ -6,7 +6,7 @@ The topic of \acrfull{ais} -based predictions has already been explored quite ex
 \section{Literature review}
 \label{sec:lit_review}
 
-As indicated in Chapter/Section x, based on initial research into the thesis' topic area, there appears to be a trend toward a focus on short-term predictions for safety or navigational purposes. In contrast, this thesis aims at using \acrshort{ais}, and other attributes, for longer-term predictions, or more precisely, port destination predictions. However, because of the exploratory nature of the thesis, the literature review conducted was broad in order to include work that might have taken a different approach to solving the same problem. In order to organize the resulting papers, a categorical separation of papers based on motivation was defined as follows:
+As indicated in \cref{sec:lit_results}, based on initial research into the thesis' topic area, there appears to be a trend toward a focus on short-term predictions for safety or navigational purposes. In contrast, this thesis aims at using \acrshort{ais}, and other attributes, for longer-term predictions, or more precisely, port destination predictions. However, because of the exploratory nature of the thesis, the literature review conducted was broad in order to include work that might have taken a different approach to solving the same problem. In order to organize the resulting papers, a categorical separation of papers based on motivation was defined as follows:
 
 \begin{enumerate}
 \setcounter{enumi}{-1}
@@ -14,19 +14,22 @@ As indicated in Chapter/Section x, based on initial research into the thesis' to
     \item The paper's motivation includes vessel predictions, but on a smaller time or geographical scale making it irrelevant for comparison.
     \item The paper's motivation includes destination predictions making it relevant for further analysis.
 \end{enumerate}
-\todo{Argue why non-maritime topics should be ex- or included. Just be clear why or why not, so ppl know you thought about it.}
 
-\textit{Category 0} is defined to filter out papers that were irrelevant but could not be excluded by narrowing the search query. \textit{Category 1} includes papers that relate to the established trend mentioned earlier where the proposed method seems relevant on a small scale but is ultimately not applicable to the thesis' problem area. It also includes papers that consider relevant topics but not relevant solutions. Finally, the papers labeled with relevancy \texttt{2} falls within \textit{Category 2} and includes papers that fall within the same topic area and are relevant in terms of insight into the proposed research questions. In order to determine what papers fitted \textit{category 1} and \textit{2}, papers with a relevance higher than zero were further analyzed in order to determine the following attributes:
+\textit{Category 0} is defined to filter out papers that were irrelevant but could not be excluded by narrowing the search query. In this category, relevance is determined by the studies' topic areas, primary motivators, or methodologies. For example, topics not falling within the maritime topic area have been excluded as they did not appear include specific insight into the thesis goal which involves specifically analyzing voyage patterns in the shipping industry. Moreover, maritime studies that did not apply any automated or technically applicable solutions were also excluded. Examples of such studies include financial model studies or case studies applied at a specific time interval, vessel segment, or geographical region or country.
+
+\textit{Category 1} includes papers that relate to the established trend mentioned earlier where the proposed method seems relevant on a small scale but is ultimately not applicable to the thesis' problem area. Such studies use relevant data sources and technologies but applies them based on different motivations than destination prediction.
+
+Finally, the papers labeled with relevancy \texttt{2} falls within \textit{Category 2} and includes papers that fall within the same topic area and are relevant in terms of providing insight into the proposed research questions. In order to determine what papers fitted \textit{category 1} and \textit{2}, papers with a relevance higher than zero were further analyzed in order to determine the following attributes:
 
 \begin{itemize}
-    \item \textbf{Motivation} - what was the problem the paper aimed to solve.
-    \item \textbf{Objective} - what was the proposed prediction method's objective (e.g. classification, prediction, clustering).
-    \item \textbf{Data source} - what data source was used in the proposed solution.\todo{If possible, exemplify for each of those (as you did for the first).}
-    \item \textbf{Prediction method} - what prediction method was applied to solve the problem.
-    \item \textbf{Geographical extent} - to what geographical scopes was the solution applicable.
-    \item \textbf{Time interval} - what were the limitations on prediction methods in terms of time or trajectory duration.
-    \item \textbf{Validation method} - what methods were applied to validate the resulting prediction method.
-    \item \textbf{Validation metrics} - what metrics were used when establishing the validity of the solution.
+    \item \textbf{Motivation} --- what was the problem the paper aimed to solve.
+    \item \textbf{Objective} --- what was the proposed prediction method's objective (e.g.\ classification, prediction, clustering).
+    \item \textbf{Data source} --- what data source was used in the proposed solution (e.g.\ historical AIS data, port data, vessel, or voyage details).
+    \item \textbf{Prediction method} --- what prediction method was applied to solve the problem.
+    \item \textbf{Geographical extent} --- to what geographical scopes was the solution applicable.
+    \item \textbf{Time interval} --- what were the limitations on prediction methods in terms of time or trajectory duration.
+    \item \textbf{Validation method} --- what methods were applied to validate the resulting prediction method.
+    \item \textbf{Validation metrics} --- what metrics were used when establishing the validity of the solution.
 \end{itemize}
 
 In this literature review, the following search engines/libraries where used to collect relevant research:
@@ -37,7 +40,7 @@ In this literature review, the following search engines/libraries where used to 
     \item \textit{ACM Digital Library}\footnote{\url{https://dl.acm.org/}}
 \end{itemize}
 
-These were chosen based on running test queries and evaluating the relevancy and range of the resulting papers. Furthermore, the proposed query had too many Boolean operators for search engines like \textit{ScienceDirect}\footnote{\url{https://sciencedirect.com}}.\todo{Perhaps you can also indicate that there was substantive overlap in the test results for other, non-used databases - if that was indeed the case.}
+These were chosen based on running test queries and evaluating the relevancy and range of the resulting papers. Furthermore, the proposed query had too many Boolean operators for search engines like \textit{ScienceDirect}\footnote{\url{https://sciencedirect.com}}, however, initial testing revealed that there were significant overlap in resulting papers in search engines not used in the study which indicates that the relevant research has indeed been covered.
 
 \subsection{Search query and filters}
 
@@ -83,10 +86,12 @@ ais AND (
 Moreover, the following filters were used to limit the search result:
 
 \begin{itemize}
-    \item The paper must be published in the last five years. \todo{How sensitive would your filter be to older work. In short: would there be other mechanisms than age that could filter older papers by default (it looks good not dismiss papers purely based on age - similar to not dismiss examiners based on age :) - pun intended)}
+    \item The paper must be published in the last five years.
     \item The paper must be available in English.
     \item The paper must be available with the publisher subscriptions provided by \acrshort{ntnu}.
 \end{itemize}
+
+The search query was limited to a five-year publish interval because there was a drastic decrease in relevant results returned when a ten-year limited was used during preliminary testing. This could be explained by recent increase in availability and easy access to historical \acrshort{ais} data as well as a recent increase in technological application within the shipping industry as a whole. However, in an attempt to reduce the number of irrelevant papers, the five-year limit was applied.
 
 The search query was first run on the search engine \textit{Scopus}, thus the search query and filters were modified to the search engine's format as shown in \cref{lst:search_query_scopus}.
 
@@ -112,6 +117,7 @@ TITLE-ABS-KEY (
 \end{lstlisting}
 
 \subsection{Results}
+\label{sec:lit_results}
 
 Using the aforementioned (\cref{sec:lit_review}) search libraries, the defined search query returned a total of \textbf{109} papers. After removing the overlapping results from the different search engines there were a total of \textbf{91} unique papers that formed the foundation of the literature review.
 
@@ -140,7 +146,7 @@ The remaining \textbf{}5 papers (listed in \cref{tab:most_relevant_papers}) were
 
 \paragraphheader{RQ 1a: What prediction methods can be used to predict vessel destinations?}
 
-Firstly, there was a large number of prediction methods that fell within \textit{category 1} that were not directly applicable for destination predictions on a global scale but were applied to smaller-scale positional predictions. These papers usually proposed some manner of clustering algorithm like \acrshort{dbscan}\todo{Ensure that this is referenced somewhere (I forgot whether it was already).} to classify trajectories and patterns with some form of point-to-point search along trajectories using either a form of \acrfull{rnn}, \acrfull{svm}, or \acrfull{knn} search.
+Firstly, there was a large number of prediction methods that fell within \textit{category 1} that were not directly applicable for destination predictions on a global scale but were applied to smaller-scale positional predictions. These papers usually proposed some manner of clustering algorithm like \acrshort{dbscan} to classify trajectories and patterns with some form of point-to-point search along trajectories using either a form of \acrfull{rnn}, \acrfull{svm}, or \acrfull{knn} search.
 
 A more relevant approach was proposed in~\cite{Zhang2020AISApproach} that used a \acrfull{rf} -based trajectory similarity measurement combined with frequencies of port visits to predict traveling vessels' next destination port. The \acrshort{dbscan} algorithm was used to define trajectories by identifying clusters of vessels around port coordinates. These positions were classified as ``port-stay-points'' so that every position between two stay points was part of a vessel trajectory. In the paper, the proposed \acrshort{rf}-based approach was compared with several other \acrshort{ml} and non-\acrshort{ml} methods of predicting destination ports in a similar fashion based on trajectory similarity. Using the proposed \acrshort{rf}-based approach, they achieved a ``port accuracy'' of \textit{66.57\%}, and a ``city accuracy'' of \textit{81.65\%}.
 
@@ -270,7 +276,7 @@ The related work within this field seem to be substantially limited in terms of 
     \cite{Wang2021AISAuto-encoder} & Improved trajectory clustering for prediction and anomoly detection & convolutional auto-encoders + clustering MFA+K-means & tested on a single city area & small & "not explained, compared to other methods" & "precision, accuracry, recall, f1 score" \\ \midrule
     \cite{Dobrkovic2015TowardsTimes} & systematic mapping of short to long term predictions & literature review (N/A) & N/A & N/A & N/A & N/A \\ \bottomrule
 \end{tabularx}}
-\caption{Papers gathered from literature study labeled with relevancy level 1 whose objective was clustering also including \cite{Dobrkovic2015TowardsTimes} who conducted a literature review.}
+\caption{Papers gathered from literature study labeled with relevancy level 1 whose objective was neither classification nor prediction.}
 \label{tab:lit_review_cat_1_4}
 \end{table}
 

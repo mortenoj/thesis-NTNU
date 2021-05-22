@@ -24,11 +24,11 @@ This section describes the initial dataset used in the proposed solution which i
 The first step in the dataset processing is to collect a historical set of \acrshort{ais} data. In this thesis, this data provided by \acrshort{mo} contains more than 1.5 billion positional records for over 65 000 unique vessels starting from December 2019 and is continuously collected. In this thesis, circa 1.2 billion records ranging from December 2019 to March 2021 were used for the proposed solution. The historical records were copied in batches from \acrshort{mo}'s database into a separate database used in this thesis in a table called \textit{vessel positions history}. This table contains the following relevant attributes for each historical record:
 
 \begin{itemize}
-    \item id - a sequential identifier
-    \item imo - the \acrshort{imo} number of the vessel that transmitted the position.
-    \item mmsi - the \acrshort{mmsi} number of the vessel that transmitted the position.
-    \item position - a geographical coordinate of the vessel in the \textit{Mercator} projection.
-    \item timestamp - the UNIX timestamp (seconds since Unix Epoch) of when the position was transmitted by the vessel.
+    \item id -- a sequential identifier
+    \item imo -- the \acrshort{imo} number of the vessel that transmitted the position.
+    \item mmsi -- the \acrshort{mmsi} number of the vessel that transmitted the position.
+    \item position -- a geographical coordinate of the vessel in the \textit{Mercator} projection.
+    \item timestamp -- the UNIX timestamp (seconds since Unix Epoch) of when the position was transmitted by the vessel.
 \end{itemize}
 
 In the process of copying data to the dedicated database, each position's coordinate is validated by ensuring that it follows the bounds its projection, i.e., that the longitude value is between -180, and 180 degrees and the latitude is between -90, and 90 degrees. If a coordinate has invalid values, it is disregarded. Furthermore, positions that lie exactly on the north and south bounds, or exactly at coordinates \textit{(180, 90)} and \textit{(-180, -90)} are also disregarded as these positions are impossible places to navigate but are still frequently seen in the database. \cref{fig:ais_positions} in \cref{sec:ais_data} shows a visualization of an extract of 100 million records from the historical \acrshort{ais} database which shows the extent of the collected positions.
@@ -40,9 +40,9 @@ Furthermore, as also mentioned in \cref{sec:ais_data}, \acrshort{imo} numbers an
 As described in \cref{sec:vessel_info_segments}, vessel segmentation values are additional attributes that indicate a vessel's type, dimensions, and capacity. These labels are thought to provide insight into the traveling patterns of vessels. Thus, this information is important for this thesis's proposed solution. \acrshort{mo} has vessel segmentation information for every unique vessel collected by \acrshort{ais} data. This information is collected and stored in the dedicated database in a table called \textit{vessel segments}. This table contains information per vessel and has the following relevant attributes:
 
 \begin{itemize}
-    \item imo - the \acrshort{imo} number of the vessel.
-    \item segment - the vessel's segment value, e.g. \textit{dry bulk}, \textit{tanker}, \textit{chemical}, etc\ldots
-    \item sub-segment - the vessel's sub-segment value, e.g., \textit{mini bulker}, \textit{handysize}, \textit{Panamax}, etc\ldots
+    \item imo -- the \acrshort{imo} number of the vessel.
+    \item segment -- the vessel's segment value, e.g. \textit{dry bulk}, \textit{tanker}, \textit{chemical}, etc\ldots
+    \item sub-segment -- the vessel's sub-segment value, e.g., \textit{mini bulker}, \textit{handysize}, \textit{Panamax}, etc\ldots
 \end{itemize}
 
 Finally, it is worth noting that some vessels can function as two different types of vessels such as tanker vessels that also function as chemical transport vessels. These ``combo'' vessels contain multiple entries in the segmentation database table for each of the functions it serves. However, they also contain a dedicated entry where the segment value is ``combo'' which can have a specific range of sub-segments. For analysis, it is more practical to assume that every vessel only has one segment and one sub-segment, therefore, for combo vessels, only the combo segment and sub-segment are considered.
@@ -52,9 +52,9 @@ Finally, it is worth noting that some vessels can function as two different type
 Next, the traveling vessel's departure and arrival port are required to predict vessels' future destinations, as destinations are defined ports. As already described in \cref{sec:shipping_ports}, \acrshort{mo} has a large number of ports available in a port database out of which around 5600 are considered relevant for the shipping industry. For this thesis, only these 5600 relevant ports are considered for the analysis, thus, these are also stored in the dedicated database in a table called ``ports''. This table contains the following relevant attributes:
 
 \begin{itemize}
-    \item locode - the port's unique identifier following the \gls{locode} protocol.
-    \item position - the port's geographical coordinates specified in the Mercator projection.
-    \item name - a text value for the name of the port.
+    \item locode -- the port's unique identifier following the \gls{locode} protocol.
+    \item position -- the port's geographical coordinates specified in the Mercator projection.
+    \item name -- a text value for the name of the port.
 \end{itemize}
 
 \subsection{Vessel transitions}
@@ -64,14 +64,13 @@ As described in \cref{sec:vessel_transitions}, vessel transitions are historical
 \begin{table}[htbp]
     \centering
     \begin{tabular}{p{0.7in} p{0.9in} p{1in} p{1in} p{0.65in}}
-    \hline
-    \bfseries{IMO} & \bfseries{MMSI} & \bfseries{Transition} & \bfseries{Timestamp} & \bfseries{Port Code} \\ \hline
-        9824083 & 538008866 & ARRIVAL   & 1595383670 & KRONS \\ \hline
-        9824083 & 538008866 & DEPARTURE & 1596177702 & KRONS \\ \hline
-        9824083 & 538008866 & ARRIVAL   & 1599869735 & BRITQ \\ \hline
-        9824083 & 538008866 & DEPARTURE & 1600002777 & BRITQ \\ \hline
-        9824083 & 538008866 & ARRIVAL   & 1603942962 & CNZNG \\ \hline
-        9824083 & 538008866 & DEPARTURE & 1604191770 & CNZNG \\ \hline
+    \bfseries{IMO} & \bfseries{MMSI} & \bfseries{Transition} & \bfseries{Timestamp} & \bfseries{Port Code} \\ \toprule
+        9824083 & 538008866 & ARRIVAL   & 1595383670 & KRONS \\ \midrule
+        9824083 & 538008866 & DEPARTURE & 1596177702 & KRONS \\ \midrule
+        9824083 & 538008866 & ARRIVAL   & 1599869735 & BRITQ \\ \midrule
+        9824083 & 538008866 & DEPARTURE & 1600002777 & BRITQ \\ \midrule
+        9824083 & 538008866 & ARRIVAL   & 1603942962 & CNZNG \\ \midrule
+        9824083 & 538008866 & DEPARTURE & 1604191770 & CNZNG \\ \bottomrule
     \end{tabular}
 \caption{Example rows for a single vessel in the vessel transitions table}
 \label{tab:vessel_transitions_example}
@@ -147,7 +146,7 @@ Finally, given a number of clusters that were close enough to map to ports, each
     \label{fig:clustered_trajectories}
 \end{figure}
 
-The resulting voyages shown in \cref{fig:clustered_trajectories} seemed promising, however, for other vessels the quality of the extracted voyages were not consistent. For example, for small vessels traveling very short distance such as passenger vessels transmitted positional records at a much higher density than larger vessels traveling further, thus, the chosen parameters did not perfectly fit these vessels. Moreover, for larger vessels, clusters were often detected mid-voyage whenever the vessel stopped for longer periods of time such as when bunkering (refueling) during a voyage. Although this was expected, it is assumed that ignoring shorter stops along voyages in order to predict the vessels' final destinations has higher commercial value when compared to often predicting the next bunkering port as the next destination for many vessels. Lastly, although the \acrshort{dbscan} method's processing performance was quite efficient, additional processing such as mapping each detected cluster to the closest port was less so. The aforementioned factors made the final cluster-based voyage solution impractical when compared to the alternative described in \cref{sec:vessel_voyage_definition} and subsequently in \cref{sec:transition_voyages} which considers the vessels' navigational statuses. Therefore, the cluster-based approach was abandoned in favor of the alternative approach which proved to be more practical in implementation and potentially more valuable for commercial actors.
+The resulting voyages shown in \cref{fig:clustered_trajectories} seemed promising, however, for other vessels the quality of the extracted voyages were not consistent. For example, for small vessels traveling very short distance such as passenger vessels transmitted positional records at a much higher density than larger vessels traveling further, thus, the chosen parameters did not perfectly fit these vessels. Moreover, for larger vessels, clusters were often detected mid-voyage whenever the vessel stopped for longer periods of time such as when bunkering (refueling) during a voyage. Although this was expected, it is assumed that ignoring shorter stops along voyages in order to predict the vessels' final destinations has higher commercial value when compared to often predicting the next bunkering port as the next destination for many vessels. Lastly, although the \acrshort{dbscan} method's processing performance was quite efficient, additional processing such as mapping each detected cluster to the closest port was less so. The aforementioned factors made the final cluster-based voyage solution impractical when compared to the alternative described in \cref{sec:vessel_voyage_definition} and subsequently in \cref{sec:transition_voyages} which considers the vessels' navigational statuses. Therefore, the cluster-based approach was abandoned in favor of the alternative approach which proved to be more practical in implementation and potentially more valuable for commercial actors. \cref{sec:transition_voyages} describes how this alternate approach was implemented as well as examples highlighting the aforementioned benefits of the alternate voyage definition.
 
 \subsection{Transition voyages}
 \label{sec:transition_voyages}
@@ -173,7 +172,13 @@ Constructing voyages based on vessel transitions and positional records can be s
     \item Store voyages with validated trajectories in the transition voyages table.
 \end{enumerate}
 
-The first step including defining trajectories based on vessel transitions is a relatively straightforward process of looking for transitions following the pattern of departures immediately followed by arrival at a different port. The algorithm used to compute voyages based on a vessel's transition events is shown in \cref{lst:voyage_times}.
+\paragraph{1. Extracting vessel transitions}
+
+First, vessel transitions were simply fetched from the database order by vessel identifiers and timestamps. In order to make the voyage building process idempotent, the last voyage constructed per vessel was pre-fetched from the voyage table and only transitions for a given vessel that occurred after the latest constructed voyage was included into the next steps. In this way, the voyage builder process could be ran multiple times when new data became available without affecting existing data.
+
+\paragraph{2. Define voyages based on subsequent departures and arrivals}
+
+This next step was a relatively straightforward process consisting of looking for transitions following the pattern of departures immediately followed by an arrival at a different port. The algorithm used to compute voyages based on a vessel's transition events is shown in \cref{lst:voyage_times}.
 
 \begin{lstlisting}[
     caption={Golang code used to compute voyage times from vessel transitions. The code has been reduced slightly for readability.},
@@ -216,9 +221,11 @@ func getVoyageTimes(transitions []VesselTransition) []Voyage {
 }
 \end{lstlisting}
 
-Next, the voyage times computed are used to construct geographical trajectories. This process is, in essence, a simple matter of extracting positional records from the vessel positions history table for the given vessels between the departure and arrival timestamp ordered by time. However, the trajectories were also validated based on coherence and distance between two points in a trajectory.
+\paragraph{3. Construct trajectories from the defined voyage times}
 
-\subsubsection{Trajectory validation}
+Next, the voyage times computed were used to construct geographical trajectories. This process is, in essence, a simple matter of extracting positional records from the vessel positions history table for the given vessels between the departure and arrival times ordered by time. However, some trajectories were found to be invalid or contained abnormal patterns, therefore, all trajectories were also validated based on coherence and distance between two points in a trajectory.
+
+\paragraph{4. Trajectory validation}
 
 During the process of building trajectories, several trajectories were discovered that showed peculiar shapes. For instance, there could be large gaps in certain parts of the trajectory or fluctuations when the vessel was stationary. Therefore, a validation step was added to the voyage construction process, for instance, if the distance between two points is sufficiently large, there is most likely missing coverage in the \acrshort{ais} data and the trajectory should probably be skipped. Furthermore, another issue was detected where some vessels showed a seemingly coherent trajectory except for a section of it where the longitude or latitude value fluctuated with extreme distances. This often happened when a vessel was stationary or moving slowly and it transmitted many positions in close proximity.
 
@@ -281,19 +288,20 @@ func nextValidPoint(start, tolerance int, positions []VesselPosition) (int, erro
 }
 \end{lstlisting}
 
+\paragraph{5. Store voyages with validated trajectories in the transition voyages table}
 Finally, when the voyage trajectories have been constructed and validated, they are collected in a database table called transition voyages which contains the following relevant attributes:
 
 \begin{itemize}
-    \item imo - an identifier for the vessel.
-    \item mmsi - an identifier for the vessel.
-    \item departure port - voyage departure port's locode.
-    \item departure timestamp - the time of departure.
-    \item arrival port - voyage arrival port's locode.
-    \item arrival timestamp - the time of arrival.
-    \item trajectory - 3D linestring with longitude, latitude, and timestamp for each point.
+    \item imo -- an identifier for the vessel.
+    \item mmsi -- an identifier for the vessel.
+    \item departure port -- voyage departure port's locode.
+    \item departure timestamp -- the time of departure.
+    \item arrival port -- voyage arrival port's locode.
+    \item arrival timestamp -- the time of arrival.
+    \item trajectory -- 3D linestring with longitude, latitude, and timestamp for each point.
 \end{itemize}
 
-It is worth noting that the trajectories are stored as 3D PostGIS linestring geometries where each point contains an \textit{x}, \textit{y}, and \textit{z} value where the \textit{z} value holds the UNIX timestamp of the positional record. Keeping the timestamp value is necessary for sampling trajectories based on time, and keeping the time values stored directly in the trajectory geometry saves an extra table for trajectory points.
+It is worth noting that the trajectories are stored as 3D PostGIS linestring geometries where each point contains an \textit{x}, \textit{y}, and \textit{z} value where the \textit{z} value holds the UNIX timestamp of the positional record. Keeping the timestamp value is necessary for sampling trajectories based on time, and keeping the time values stored directly in the trajectory geometry saves an extra table for trajectory points. Thus, storage complexity is somewhat reduced while retrieval complexity remains the same with a separate trajectory point table as the PostGIS function \textit{ST\_DumpPoints} can be used retrieve the \textit{XYZ} coordinates similarly to that of a \textit{JOIN} operation on a separate table. The performance benefits are negligible.
 
 \section{Data processing for \acrfull{ml}}
 
@@ -492,7 +500,7 @@ The similarity value derived from the \acrshort{mstd} calculation and the length
 
 \subsection{The final dataset -- Summary}
 
-The final process of creating the dataset used in the analysis can be summarized in the following steps:
+As described in \cref{sec:initial_data_foundation}, \acrfull{mo} provided the initial data foundation consisting of historical \acrshort{ais} data, a global set of shipping ports, vessel segmentation data, and transition events of vessels' navigational statuses. Historical \acrshort{ais} data was extracted, validated and \acrshort{mmsi} numbers was mapped to the appropriate \acrshort{imo} number. The ports data was extracted and filtered on a ``visible'' attribute which indicates that the port was deemed relevant by \acrshort{mo}. Vessel transitions were extracted filtering on only arrival and departure events, excluding events such as ``detected'' while the vessel segmentation data was purely copied without processing. Based on this initial data foundation, the final process of creating the dataset used in the analysis can be summarized in the following steps:
 
 \begin{itemize}
     \item Voyages are defined using time intervals provided by the vessels' \acrshort{ais} navigational status. They are constructed and stored in a voyage database table containing the full geographical trajectory, arrival and departure ports, and additional information for the traveling vessel.
@@ -507,7 +515,7 @@ The final process of creating the dataset used in the analysis can be summarized
     \end{itemize}
 \end{itemize}
 
-An overview of the process described in this chapter thus far is shown in \cref{fig:dataset_overview} from the data provided by \acrfull{mo} to the final \acrshort{ml} training data, and the final dataset is collected in the database table called \acrshort{ml} training data, the attributes it contains are listed in \cref{tab:ml_training_data}.
+An overview of the process described in this chapter thus far is shown in \cref{fig:dataset_overview} from the data provided by \acrfull{mo} to the final \acrshort{ml} training data. The final dataset is collected in the database table called \acrshort{ml} training data, the attributes it contains are listed in \cref{tab:ml_training_data}.
 
 \begin{figure}[htbp]  % order of priority: h here, t top, b bottom, p page
     \centering
@@ -515,7 +523,6 @@ An overview of the process described in this chapter thus far is shown in \cref{
     \caption{Overview of the process used to construct the dataset used in further analysis and \acrshort{ml}}
     \label{fig:dataset_overview}
 \end{figure}
-
 \begin{table}[htbp]
     \centering
     \small{\begin{tabularx}{1.0\textwidth}{p{1.0in} p{0.75in} X}
@@ -539,13 +546,6 @@ An overview of the process described in this chapter thus far is shown in \cref{
 
 After building the \acrfull{ml} training dataset, the next part of the process included finding a \acrshort{ml} model that suits the dataset, prepare and train it to predict values for the arrival port column in the training dataset. This section describes the process starting from the training dataset to the final trained prediction model.
 
-\subsection{Categorical label encoding}
-
-\todo{drop one-hot}
-In the training dataset, there are both numerical values as well as categorical values. Categorical values are values that are a subset of a finite number of possible values, while numerical values have infinite possible values. In the training data, the data concerning ports and vessel segments are examples of categorical values, and the length of the vessel trajectories and the similarity values derived from the \acrshort{mstd} value is numerical. As described in \cref{sec:label_encoding}, the categorical values must be encoded so that \acrshort{ml} models can understand them. Choosing an appropriate encoding method depends on the cardinality of the features in the dataset. For instance, there are more than 5000 possible ports in the data foundation, therefore, columns concerning ports such as arrival port, departure port, and \acrshort{mstd} have high cardinality. On the other hand, the features segment, and sub-segment have lower cardinality as there are only eight segments and 95 unique sub-segments. Based on the advantages and disadvantages of label encoding and ``one-hot'' encoding (\cref{sec:label_encoding}), it makes sense to ``one-hot'' encode the low cardinality features, while using label encoding for the remaining columns.
-
-\todo{figure or code}
-
 \subsection{Dataset imbalance}
 \label{sec:dataset_imbalance}
 
@@ -558,7 +558,7 @@ Due to the nature of vessel voyage patterns based on vessels of different types 
     \label{fig:data_imbalance}
 \end{figure}
 
-Because of the severe imbalance in the training set, simply applying oversampling techniques on the full dataset such as \acrshort{smote} to the original dataset increases the total data size to an unmanageable amount of \textbf{203} million samples. On the other hand, using a simple majority undersampling method removes most of the data, reducing it so almost no data is left. \cref{fig:all_samplers} shows how different sampling methods perform using a limited version of the original dataset. As it shows, \acrshort{smote} (purple graph), oversamples the dataset massively, undersampling (red graph) reduces the dataset by \textit{92\%}, while \acrshort{smote} + ENN increases data size, but does a better job keeping relationships in the data.
+Because of the severe imbalance in the training set, simply applying oversampling techniques on the full dataset such as \acrshort{smote} \parencite{Chawla2002} to the original dataset increases the total data size to an unmanageable amount of \textbf{203} million samples. On the other hand, using a simple majority undersampling method removes most of the data, reducing it so almost no data is left. \cref{fig:all_samplers} shows how different sampling methods perform using a limited version of the original dataset. As it shows, \acrshort{smote} (purple graph), oversamples the dataset massively, undersampling (red graph) reduces the dataset by \textit{92\%}, while \acrshort{smote} + ENN increases data size, but does a better job keeping relationships in the data.
 
 \begin{figure}[htbp]
     \centering
@@ -568,6 +568,33 @@ Because of the severe imbalance in the training set, simply applying oversamplin
 \end{figure}
 
 Because of the significant outliers in the data, an ensemble of both under and oversampling was used to balance the dataset without generating a massive amount of synthetic data while also not removing too much information. The ensemble approach first undersamples classes that occur more than \textit{20\%} of the most frequent class to remove the most severe spikes, applies \textit{``\acrshort{smote} + ENN''} over and undersampling method to balance the dataset while still keeping important patterns in the dataset, then finally an undersampling step is added to flatten out frequency spikes to arrive at a final dataset size that is similar to the original. However, since \acrshort{smote} is used during this process, there are synthetic samples in the new dataset. These generated values are based on similar samples in the dataset, however, in the case of segment and sub-segment, specific sub-segments belong to certain segments, so when these are structured as separate values, SMOTE can synthetically generate invalid combinations of segments and sub-segments. To ensure the model doesn't waste time training on impossible segment and sub-segment combinations, the segment and sub-segment values were combined into one segmentation value before encoding and balancing. This also reduces the complexity of the \acrshort{ml} model structure as there are one fewer feature to consider. The segment and sub-segment values are concatenated using a delimiter, so they are easily divided again after training to further evaluate the results based on these values.
+
+\subsection{Categorical label encoding}
+
+In the training dataset, there are both numerical values as well as categorical values. Categorical values are values that are a subset of a finite number of possible values, while numerical values have infinite possible values. In the training data, the data concerning ports and vessel segments are examples of categorical values, and the length of the vessel trajectories and the similarity values derived from the \acrshort{mstd} value is numerical. The underlaying problem of encoding categorical values and possible solutions have been described in \cref{sec:label_encoding}, and as described, choosing an appropriate encoding method depends on the cardinality of the features in the dataset. For instance, there are more than 5000 possible ports in the data foundation, therefore, columns concerning ports such as arrival port, departure port, and \acrshort{mstd} have high cardinality. On the other hand, features such as segment and sub-segment have low cardinality, however, as these features have been combined into one ``segmentation'' feature, the combined feature has \textit{107} possible values. \textit{One-hot} encoding, therefore, seems impractical for either types of features, thus, traditional label encoding was applied to the entire dataset before training. \cref{lst:label_encoding} shows an example categorical values being label encoded as preparation before the training process.
+
+\begin{lstlisting}[
+    caption={Example of training data before and after label encoding being applied.},
+    label=lst:label_encoding,
+    showstringspaces=false,
+]
+[main] categorical training data features:
+   departure_port  sspd_mstd  arrival_port  segmentation
+0           CNRZH      CNWIT         CNSHG      dry_bulk-supramax
+1           CNRZH      CNNDE         CNSHG      dry_bulk-supramax
+2           CNRZH      CNSHG         CNSHG      dry_bulk-supramax
+3           TRHER      TRZEY         RUNVS      dry_bulk-handysize
+4           TRHER      TRZEY         RUNVS      dry_bulk-handysize
+
+[main] encoded categorical training data features:
+   departure_port  sspd_mstd  arrival_port  segmentation
+0             574        593           464            27
+1             574        557           464            27
+2             574        574           464            27
+3            3745       3666          2552            19
+4            3745       3666          2552            19
+\end{lstlisting}
+
 
 \subsection{Model selection}
 
@@ -587,8 +614,6 @@ At this stage, the final data is fully processed and prepared for model training
 \caption{Classifiers tested out in the model selection phase. Every classifier was trained using 50 thousand samples from the training data.}\label{tab:model_selection}
 \end{table}
 
-\todo{perhaps I should move more explanation over to background}
-
 Note that One vs. Rest (OVR) classifiers differs from the multi-class classification methods as they convert the multi-class problem to multiple binary classification problems. For instance, instead of predicting which port a voyage will arrive at, the OVR classifiers consider the perspective of a port so that the problem becomes: will the vessel arrive at this specific port? Moreover, the best performing model was the \acrfull{rf} model, followed closely by the two variants of XGBoost implementations. The \acrshort{rf} and \acrshort{xgb} models are somewhat similar methods. They both are both ensemble decision tree methods meaning they configure multiple decision trees, or a forest, that vote on outcome values. This is based on the concept of ``wisdom of crowds'' where multiple relatively uncorrelated trees acting as a committee is capable of outperforming a single decision tree classifier. In the \acrshort{rf} method, the decision trees are constructed using bagging and bootstrapping as methods of randomizing the construction of decision trees either by randomizing what features to use when constructing a tree or what samples to use. The goal is that the trees gain their own unique perspective by being constructed in a particular way. In the \acrshort{xgb} model, trees are created in a process called boosting where in each boosting round a new tree is constructed based on the previous mistakes made by the previous trees.
 
 Initially, the \acrshort{rf} model was explored further for the final training process. However, the ``RFClassifier'' Python implementation seemed problematic for larger datasets as the memory requirements are considerable because of the size of the model as well as the high number of possible arrival ports which requires a large tree ensemble to learn. Furthermore, the Python implementation does not support out-of-core learning or incremental batch learning so it is less practical in the final training process. On the other hand, the XGBoost implementation seems more apt at handling larger data sizes as it uses less memory in general as well as it supports both out-of-core and incremental learning which is provides more options in terms of computing resource requirements.
@@ -598,12 +623,12 @@ Initially, the \acrshort{rf} model was explored further for the final training p
 For different \acrshort{ml} methods, there are usually many different configurations available to tune how the model learns. For the selected \acrfull{xgb} model, based on the library's documentation, the most important parameters to configure are the following:
 
 \begin{itemize}
-    \item \textit{n\_estimators} - the number of boosting rounds used. Default is 100.
-    \item \textit{max\_depth} - the max depth per tree in the model. Default is 6.
-    \item \textit{subsample} - the fraction of samples from the training data considered when building each tree. Default is 1.0.
-    \item \textit{colsample\_bytree} - the number of features to consider when building each tree. Default is 1.0.
-    \item \textit{min\_child\_weight} - the minimum weight required for a child node. Default is 1.0.
-    \item \textit{gamma} - the minimum loss reduction required to split a node in the tree. Default is 0.
+    \item \textit{n\_estimators} -- the number of boosting rounds used. Default is 100.
+    \item \textit{max\_depth} -- the max depth per tree in the model. Default is 6.
+    \item \textit{subsample} -- the fraction of samples from the training data considered when building each tree. Default is 1.0.
+    \item \textit{colsample\_bytree} -- the number of features to consider when building each tree. Default is 1.0.
+    \item \textit{min\_child\_weight} -- the minimum weight required for a child node. Default is 1.0.
+    \item \textit{gamma} -- the minimum loss reduction required to split a node in the tree. Default is 0.
 \end{itemize}
 
 The parameters \textit{n\_estimators}, \textit{max\_depth}, \textit{min\_child\_weight}, and \textit{gamma} helps control the complexity of the model, while the others introduce randomness to the tree building process. All of these parameters can be tuned to prevent overfitting and produce a well-performing model. In order to find the best parameters to use, the model was trained several times using different configurations on a subset of the original dataset in a process called hyper-parameter optimization. First, the parameters listed above were listed with a range of different values for each to test. Initially, these ranges were large to get an initial idea of what parameters fit the best. A random grid search was used to find a rough estimate of what values perform the best. In this process, 100 different configurations were randomly selected from all the possible permutations in order to get a feeling of what types of ranges fit the different parameters without attempting to train on all of them. The best result from this process provided insight into what general values seemed to work for the dataset. \cref{lst:grid_search} shows an example of how parameters are defined and used in a random search. Next, a grid search was applied using smaller ranges based on the best result from the random search to further fine-tune the parameters. The grid search methods both use cross folder validation to arrive at the best performing configuration to consider overfitting in the final result, so the resulting parameters are a good place to start in the initial training process.
