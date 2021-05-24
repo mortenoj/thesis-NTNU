@@ -45,7 +45,7 @@ As described in \cref{sec:vessel_info_segments}, vessel segmentation values are 
     \item sub-segment -- the vessel's sub-segment value, e.g., \textit{mini bulker}, \textit{handysize}, \textit{Panamax}, etc\ldots
 \end{itemize}
 
-Finally, it is worth noting that some vessels can function as two different types of vessels such as tanker vessels that also function as chemical transport vessels. These ``combo'' vessels contain multiple entries in the segmentation database table for each of the functions it serves. However, they also contain a dedicated entry where the segment value is ``combo'' which can have a specific range of sub-segments. For analysis, it is more practical to assume that every vessel only has one segment and one sub-segment, therefore, for combo vessels, only the combo segment and sub-segment are considered.
+Finally, it is worth noting that some vessels can function as two different types of vessels such as tanker vessels that also function as chemical transport vessels. These ``combo'' vessels contain multiple entries in the segmentation database table for each of the functions it serves. However, they also contain a dedicated entry where the segment value is ``combo'' which can have a specific range of sub-segments. For technical reasons, it is more practical to assume that every vessel only has one segment and one sub-segment, therefore, for combo vessels, only the combo segment itself and its sub-segment are considered.
 
 \subsection{Ports}
 
