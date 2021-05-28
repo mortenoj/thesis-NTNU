@@ -91,7 +91,7 @@ First, positional \acrshort{ais} records were fetched per vessel as well as the 
     caption={Python code used to cluster \acrshort{ais} records using \acrshort{dbscan} and map the clusters to their closest ports.},
     label=lst:dbscan_clustering,
     language=Python,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 def dbscan_reduce_vessels(df, port_df,
                           epsilon=0.00001095,
@@ -184,7 +184,7 @@ This next step was a relatively straightforward process consisting of looking fo
     caption={Golang code used to compute voyage times from vessel transitions. The code has been reduced slightly for readability.},
     label=lst:voyage_times,
     language=Go,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 func getVoyageTimes(transitions []VesselTransition) []Voyage {
 	var voyages []Voyage
@@ -258,7 +258,7 @@ The noise filtering employed in the trajectory builder is shown in \cref{fig:noi
     caption={Golang code used find the next valid point for any given point in a trajectory.},
     label=lst:noise_filter,
     language=Go,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 // nextValidPoint returns the index of the next valid point checking distances to
 // every point within tolerance. If no valid distances were found wihin tolerance,
@@ -327,7 +327,7 @@ For these reasons, throughout the rest of the implementation, sampling is done b
     caption={Golang code from a sampler package written to sample a trajectory based on time.},
     label=lst:trajectory_sampler,
     language=Go,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 // resampleTime resamples trajectory based on s.SampleRate given in hours.
 // Extracts the first position within intervals based on sample rate
@@ -436,7 +436,7 @@ The process of dividing a trajectory into multiple shorter lengths is relatively
     caption={Python code used to create incomplete voayges by dividing them into multiple lengths.},
     label=lst:incomplete_voyages,
     language=Python,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 def get_incomplete_trajectories(df, parts=4):
     """divides trajectories in df into n parts
@@ -576,7 +576,7 @@ In the training dataset, there are both numerical values as well as categorical 
 \begin{lstlisting}[
     caption={Example of training data before and after label encoding being applied.},
     label=lst:label_encoding,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 [main] categorical training data features:
    departure_port  sspd_mstd  arrival_port  segmentation
@@ -637,7 +637,7 @@ The parameters \textit{n\_estimators}, \textit{max\_depth}, \textit{min\_child\_
     caption={Python example of parameters used for random grid search in hyper-parameter optimization process.},
     label=lst:grid_search,
     language=Python,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 random_grid = {
     "n_estimators": [100, 200, 300],
@@ -685,7 +685,7 @@ First, the full training set was used in the standard training process. However,
     caption={Python functions used to batch train the XGBoost model.},
     label=lst:batch_train,
     language=Python,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 def prepare_training_data(config):
     df = get_all_data()
@@ -742,7 +742,7 @@ Next, the external memory version of \acrshort{xgb} was tested in an attempt to 
     caption={Python code showing how a \acrshort{xgb} model can be trained using external memory.},
     label=lst:ext_mem_train,
     language=Python,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 # internal memory version
 # dtrain = xgb.DMatrix(data=X, label=y)
@@ -763,7 +763,7 @@ Finally, in order to establish the differences and to find the most optimal trai
     caption={Python code showing how the \acrshort{xgb} model was trained in one iteration},
     label=lst:final_training_process,
     language=Python,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 def train_xgb_classifier(df, target_column):
     params = {
@@ -804,7 +804,7 @@ Based on \acrshort{ml} conventions and related works, several performance metric
     caption={Python code used to calculate accuracies per segment and sub-segment to gain insight into the predictability of different vessels.},
     label=lst:segment_accuracy,
     language=Python,
-    showstringspaces=false,
+    showstringspaces=false
 ]
 def column_accuracy(correct, incorrect, columns=["segment", "sub_segment"]):
     cr = correct.groupby(columns).size()
