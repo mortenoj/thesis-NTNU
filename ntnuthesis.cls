@@ -173,7 +173,6 @@
     maxcitenames=2,
     mincitenames=1,
     citestyle=authoryear-ibid,
-    sorting=none,
     dashed=false
 ]{biblatex}                                 % for bibliography
 \RequirePackage{csvsimple}                  % tables from csv files
